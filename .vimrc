@@ -24,20 +24,14 @@ endif
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
-
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
   au!
-
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
-
   augroup END
-
 else
-
   set autoindent		" always set autoindenting on
-
 endif " has("autocmd")
 
 " Add optional packages.
@@ -54,10 +48,18 @@ set number
 set encoding=utf-8
 scriptencoding utf-8
 
+"
+"
+" Tabline Configuration
+set showtabline=2
+
+set lines=35 columns=130
+
 set guifont=Menlo\ Regular:h18
 
 let mapleader=" "
 
+" Space + s -- reload .vimrc
 map <leader>s :source ~/.vimrc<CR>
 
 set hidden
@@ -79,6 +81,7 @@ nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
 
 set showmatch
 
+" Space + Space -- open last file
 nnoremap <Leader><Leader> :e#<CR>
 
 set laststatus=2
@@ -87,18 +90,68 @@ set incsearch
 
 set wildignore=*.o,*.obj,*.bak,*.exe
 
-syntax on
-
 set noshowmode
 
+"
+"
+" Lightline Settings
 let g:lightline = {
       \ }
 
+" END Lightline Settings
+"
+"
+
+
+"
+"
+" NERDTree & NERDTreeTab Settings
+" Show NERDTree on start up
 autocmd VimEnter * NERDTree
 autocmd VimEnter * wincmd p
+let g:nerdtree_tabs_open_on_console_startup=1
+
+" Close vim if NERDtree is the last thing open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 let NERDTreeShowHidden=1
-nmap <leader>n :NERDTreeToggle<CR>
+" Space + n -- open/close NERDTree
+nmap <leader>n :NERDTreeTabsToggle<CR>
+" Space + j -- find currently open file in NERDTree
 nmap <leader>j :NERDTreeFind<CR>
 
 let NERDTreeIgnore=['\.DS_Store', '\~$', '\.swp']
+
+" Space + t -- switch to NERDTree or back to editor
+nnoremap <Leader>t <C-w>w
+
+" END NERDTree Settings
+"
+"
+
+
+"
+"
+" Set custom colors
+hi Visual ctermfg=Black ctermbg=Blue
+hi LineNr ctermfg=Gray
+hi VertSplit ctermfg=Black ctermbg=Gray
+
+syntax enable
+
+" END custom colors
+"
+"
+
+
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+
+set softtabstop=4 expandtab
