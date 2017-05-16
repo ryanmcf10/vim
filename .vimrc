@@ -107,8 +107,7 @@ let g:lightline = {
 "
 " NERDTree & NERDTreeTab Settings
 " Show NERDTree on start up
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
+autocmd VimEnter * if argc() == 1 | NERDTree | wincmd p | endif
 let g:nerdtree_tabs_open_on_console_startup=1
 
 " Close vim if NERDtree is the last thing open
@@ -144,6 +143,7 @@ syntax enable
 "
 
 
+" Delete full tabs
 function! InsertTabWrapper()
     let col = col('.') - 1
     if !col || getline('.')[col - 1] !~ '\k'
