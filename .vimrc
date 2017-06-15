@@ -1,25 +1,21 @@
 execute pathogen#infect()
 
+source $VIMRUNTIME/defaults.vim
+
+set nocompatible
+
+set nobackup
+set nowritebackup
+set noswapfile
+
+set ignorecase
+set smartcase
+
+set autoread
+
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
   finish
-endif
-
-" Get the defaults that most users want.
-source $VIMRUNTIME/defaults.vim
-
-if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
-else
-  set backup		" keep a backup file (restore to previous version)
-  if has('persistent_undo')
-    set undofile	" keep an undo file (undo changes after closing)
-  endif
-endif
-
-if &t_Co > 2 || has("gui_running")
-  " Switch on highlighting the last used search pattern.
-  set hlsearch
 endif
 
 " Only do this part when compiled with support for autocommands.
@@ -119,7 +115,7 @@ nmap <leader>n :NERDTreeTabsToggle<CR>
 " Space + j -- find currently open file in NERDTree
 nmap <leader>j :NERDTreeFind<CR>
 
-let NERDTreeIgnore=['\.DS_Store', '\~$', '\.swp']
+let NERDTreeIgnore=['\.DS_Store', '\~$', '\.swp', '\.swo']
 
 " Space + t -- switch to NERDTree or back to editor
 nnoremap <Leader>t <C-w>w
@@ -143,7 +139,6 @@ syntax enable
 "
 
 
-" Delete full tabs
 function! InsertTabWrapper()
     let col = col('.') - 1
     if !col || getline('.')[col - 1] !~ '\k'
@@ -155,3 +150,7 @@ endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
 set softtabstop=4 expandtab
+
+set path+=**
+
+autocmd BufNewFile *.html 0r ~/skeletons/skeleton.html
