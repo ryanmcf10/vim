@@ -70,6 +70,8 @@ set smartindent
 set autoindent
 
 autocmd BufWritePre * :%s/\s\+$//e
+autocmd BufRead * setlocal foldmethod=marker
+autocmd BufRead * normal zM
 
 set hlsearch
 
@@ -78,7 +80,7 @@ nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
 set showmatch
 
 " Space + Space -- open last file
-nnoremap <Leader><Leader> :e#<CR>
+nnoremap <Leader><Leader> za
 
 set laststatus=2
 
