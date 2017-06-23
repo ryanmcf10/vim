@@ -1,7 +1,8 @@
-execute pathogen#infect()
-
 source $VIMRUNTIME/defaults.vim
 
+" {{{ Settings
+
+set shell=C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe\ -executionpolicy\ bypass
 set nocompatible
 
 set nobackup
@@ -10,77 +11,31 @@ set noswapfile
 
 set ignorecase
 set smartcase
+set autoindent
+set smartindent
+filetype indent on
 
 set autoread
-
-" When started as "evim", evim.vim will already have done these settings.
-if v:progname =~? "evim"
-  finish
-endif
-
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
-  augroup END
-else
-  set autoindent		" always set autoindenting on
-endif " has("autocmd")
-
-" Add optional packages.
-"
-" The matchit plugin makes the % command work better, but it is not backwards
-" compatible.
-if has('syntax') && has('eval')
-  packadd matchit
-endif
-set shell=C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe\ -executionpolicy\ bypass
-
 set number
 
 set encoding=utf-8
 scriptencoding utf-8
 
-"
-"
-" Tabline Configuration
-set showtabline=2
-
-set lines=35 columns=130
-
 set guifont=Menlo\ Regular:h18
-
-let mapleader=" "
-
-" Space + s -- reload .vimrc
-map <leader>s :source ~/.vimrc<CR>
 
 set hidden
 set history=100
 
-filetype indent on
 set nowrap
 set tabstop=4
 set shiftwidth=4
 set expandtab
-set smartindent
-set autoindent
 
-autocmd BufWritePre * :%s/\s\+$//e
-autocmd BufRead * setlocal foldmethod=marker
-autocmd BufRead * normal zM
+set showtabline=2
+set lines=35 columns=130
 
 set hlsearch
-
-nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
-
 set showmatch
-
-" Space + Space -- open last file
-nnoremap <Leader><Leader> za
 
 set laststatus=2
 
@@ -90,20 +45,50 @@ set wildignore=*.o,*.obj,*.bak,*.exe
 
 set noshowmode
 
-"
-"
-" Lightline Settings
+set softtabstop=4 expandtab
+
+set path+=**
+
+syntax enable
+
+" }}}
+
+" {{{ Key mappings
+
+let mapleader=" "
+
+" Space + s -- reload .vimrc
+map <leader>s :source ~/.vimrc<CR>
+
+" Space + Space -- toggle folds
+nnoremap <Leader><Leader> za
+
+" Press 'esc' to unhighlight searched terms
+nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
+
+" }}}
+
+" {{{ Autocmd
+autocmd BufWritePre * :%s/\s\+$//e
+autocmd BufRead * setlocal foldmethod=marker
+autocmd BufRead * normal zM
+
+autocmd BufNewFile *.html 0r ~/skeletons/skeleton.html
+" }}}
+
+" {{{ Plug-ins
+
+" {{{ Pathogen
+execute pathogen#infect()
+" }}}
+
+" {{{ Lightline
 let g:lightline = {
       \ }
+" }}}
 
-" END Lightline Settings
-"
-"
+" {{{ NERDTree
 
-
-"
-"
-" NERDTree & NERDTreeTab Settings
 " Show NERDTree on start up
 autocmd VimEnter * if argc() == 1 | NERDTree | wincmd p | endif
 let g:nerdtree_tabs_open_on_console_startup=1
@@ -122,25 +107,28 @@ let NERDTreeIgnore=['\.DS_Store', '\~$', '\.swp', '\.swo']
 " Space + t -- switch to NERDTree or back to editor
 nnoremap <Leader>t <C-w>w
 
-" END NERDTree Settings
-"
-"
+" }}}
 
+" {{{ Matchit
 
-"
-"
-" Set custom colors
+" The matchit plugin makes the % command work better, but it is not backwards
+" compatible.
+if has('syntax') && has('eval')
+  packadd matchit
+endif
+
+" }}}
+
+" }}}
+
+" {{{ Colors
 hi Visual ctermfg=Black ctermbg=Blue
 hi LineNr ctermfg=Gray
 hi VertSplit ctermfg=Black ctermbg=Gray
+" }}}
 
-syntax enable
-
-" END custom colors
-"
-"
-
-
+" {{{ Functions
+" {{{ InsertTabWrapper
 function! InsertTabWrapper()
     let col = col('.') - 1
     if !col || getline('.')[col - 1] !~ '\k'
@@ -150,9 +138,5 @@ function! InsertTabWrapper()
     endif
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-
-set softtabstop=4 expandtab
-
-set path+=**
-
-autocmd BufNewFile *.html 0r ~/skeletons/skeleton.html
+" }}}
+" }}}
